@@ -56,7 +56,7 @@ variable "override_tf_version" {
 }
 
 variable "override_aws_provider_version" {
-  description = "(Optional) Override version of AWS provider to use, defaults to 6.23.0 if not set"
+  description = "(Optional) Override version of AWS provider to use, defaults to 6.34.0 if not set"
   type        = string
   default     = null
 }

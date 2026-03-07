@@ -15,7 +15,7 @@ locals {
     {
       name             = "aws"
       provider_source  = "hashicorp/aws"
-      provider_version = coalesce(var.override_aws_provider_version, "6.23.0")
+      provider_version = coalesce(var.override_aws_provider_version, "6.34.0")
     },
     {
       name             = "local"
@@ -180,8 +180,8 @@ resource "local_file" "terraform_tf" {
     dynamodb_table         = aws_dynamodb_table.state_file_lock_table.name
     profile_name           = var.state_file_profile_name
   })
-  directory_permission = "0666"
-  file_permission      = "0666"
+  directory_permission = "0755"
+  file_permission      = "0644"
 }
 
 # Generate the versions.tf to specify the providers to use with minimum versions
@@ -191,6 +191,6 @@ resource "local_file" "versions_tf" {
     tf_version = local.tf_version
     providers  = local.provider_config
   })
-  directory_permission = "0666"
-  file_permission      = "0666"
+  directory_permission = "0755"
+  file_permission      = "0644"
 }
