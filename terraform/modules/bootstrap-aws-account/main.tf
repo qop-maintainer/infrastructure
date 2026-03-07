@@ -3,7 +3,6 @@
 #--------------------------------------------#
 locals {
   tf_version            = coalesce(var.override_tf_version, "1.14.6")
-  state_lock_table_name = coalesce(var.override_state_lock_table_name, "terraform-state-lock")
   kms_key_alias         = coalesce(var.override_kms_key_alias, "alias/aws/s3")
 
   aws_tags = coalesce(var.override_aws_tags, {
@@ -30,7 +29,6 @@ locals {
 #----------------------------------------------#
 # 1. S3 bucket, with versioning, KMS encryption, 
 #    no public access, and locked down ACLs
-# 2. DynamoDB table for state locking, encrypted
 
 # S3 Bucket to store state file
 resource "aws_s3_bucket" "state_file_bucket" {
@@ -72,36 +70,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "state_file_bucket
   }
 }
 
-# DynamoDB table for locking the state file while updating
-resource "aws_dynamodb_table" "state_file_lock_table" {
-  name         = local.state_lock_table_name
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-
-  tags = local.aws_tags
-}
-
-# IAM Policy document to access the S3 bucket and DynamoDB table used by
-# the state file.
+# IAM Policy document to access the S3 bucket used for the state file.
 data "aws_iam_policy_document" "state_file_access_permissions" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "dynamodb:DescribeTable",
-      "dynamodb:GetItem",
-      "dynamodb:PutItem",
-      "dynamodb:DeleteItem",
-    ]
-    resources = [
-      "${aws_dynamodb_table.state_file_lock_table.arn}",
-    ]
-  }
-
   statement {
     effect = "Allow"
     actions = [
@@ -116,7 +86,8 @@ data "aws_iam_policy_document" "state_file_access_permissions" {
     effect = "Allow"
     actions = [
       "s3:GetObject",
-      "s3:PutObject"
+      "s3:PutObject",
+      "s3:DeletObject"
     ]
     resources = [
       "${aws_s3_bucket.state_file_bucket.arn}/*",
@@ -147,7 +118,7 @@ resource "aws_iam_policy" "state_file_access_iam_policy" {
 
 # Create the terraform backend configuration - the catch 22 is that you need infrastructure to 
 # store the state file before you can automate your infrastructure. The approach needs 2 steps:
-# 1. Create the S3 bucket and DynamoDB table to store the state, and generate the backend 
+# 1. Create the S3 bucket to store the state, and generate the backend 
 #    config for terraform to use in the terraform.tf file.
 # 2. For the 2nd run, it will now use this config and migrate the local state file to S3.
 resource "local_file" "terraform_tf" {
@@ -157,7 +128,6 @@ resource "local_file" "terraform_tf" {
     state_file_bucket_key  = var.state_file_bucket_key
     state_file_aws_region  = var.state_file_aws_region
     kms_key_id             = local.kms_key_alias
-    dynamodb_table         = aws_dynamodb_table.state_file_lock_table.name
     profile_name           = var.state_file_profile_name
   })
   directory_permission = "0755"

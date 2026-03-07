@@ -2,14 +2,16 @@
 # While changes won't be overwritten unless run locally and committed, highly recommended
 # to not change this outside of the module.
 terraform {
-  required_version = "${tf_version}"
+  required_version = "1.14.6"
 
   required_providers {
-%{ for provider in providers ~}
-    ${lower(provider.name)} = {
-      source  = "${provider.provider_source}"
-      version = "${provider.provider_version}"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "6.34.0"
     }
-%{ endfor ~}
+    local = {
+      source  = "hashicorp/local"
+      version = "2.7.0"
+    }
   }
 }

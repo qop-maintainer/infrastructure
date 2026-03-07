@@ -31,12 +31,6 @@ variable "tf_additional_providers" {
   default = []
 }
 
-variable "override_state_lock_table_name" {
-  description = "(Optional) Override name of the DynamoDB table to use for locking while updating, defaults to terraform-state-lock"
-  type        = string
-  default     = null
-}
-
 variable "override_aws_tags" {
   description = "(Optional) Override tags to apply to AWS resources"
   type        = map(string)
