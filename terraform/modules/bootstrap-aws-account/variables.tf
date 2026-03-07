@@ -44,7 +44,7 @@ variable "override_aws_tags" {
 }
 
 variable "override_kms_key_alias" {
-  description = "(Optional) Override KMS key alias to use for state file encryption, defaults to alias/kms/s3"
+  description = "(Optional) Override KMS key alias to use for state file encryption, defaults to alias/aws/s3"
   type        = string
   default     = null
 }

@@ -13,7 +13,7 @@ To use the module, the following needs to be specified:
 
 ```terraform
 module "bootstrap" {
-    source = "github.com/build-on-aws/terraform-samples//modules/bootstrap-aws-account"
+    source = ".modules/bootstrap-aws-account"
 
     state_file_aws_region  = "region-for-state-file-bucket"
     state_file_bucket_name = "name-for-the-state-file-bucket"
@@ -30,7 +30,7 @@ module "bootstrap" {
 |override_kms_key_alias|`string`|Default value is `alias/aws/s3`, allows setting a different key alias to use.|
 |override_tf_version|`string`|Default value is `1.14.6`, allows setting a different value.|
 |override_local_provider_version|`string`|Default value is `null`, allows setting a different value.|
-|tf_additional_providers|`list(object({name = string provider_source  = string provider_version = string}))`|Default value is `[]`, allows adding additional providers to add to the generated `providers.tf` file.|
+|tf_additional_providers|`list(object({name = string provider_source  = string provider_version = string}))`|Default value is `[]`, allows adding additional providers to add to the generated `versions.tf` file.|
 
 ## License
 

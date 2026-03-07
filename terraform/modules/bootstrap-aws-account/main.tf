@@ -38,15 +38,6 @@ resource "aws_s3_bucket" "state_file_bucket" {
   tags   = local.aws_tags
 }
 
-# Ignore other ACLs to ensure bucket stays private
-resource "aws_s3_bucket_public_access_block" "state_file_bucket" {
-  bucket                  = aws_s3_bucket.state_file_bucket.id
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
 # Set ownership controls to bucket to prevent access from other AWS accounts
 resource "aws_s3_bucket_ownership_controls" "state_file_bucket" {
   bucket = aws_s3_bucket.state_file_bucket.id
@@ -54,17 +45,6 @@ resource "aws_s3_bucket_ownership_controls" "state_file_bucket" {
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
-}
-
-# Set bucket ACL to private
-resource "aws_s3_bucket_acl" "state_file_bucket" {
-  depends_on = [
-    aws_s3_bucket_ownership_controls.state_file_bucket,
-    aws_s3_bucket_public_access_block.state_file_bucket,
-  ]
-
-  bucket = aws_s3_bucket.state_file_bucket.id
-  acl    = "private"
 }
 
 # Enable bucket versioning
@@ -128,7 +108,7 @@ data "aws_iam_policy_document" "state_file_access_permissions" {
       "s3:ListBucket"
     ]
     resources = [
-      "${aws_s3_bucket.state_file_bucket.arn}/${var.state_file_bucket_key}",
+      "${aws_s3_bucket.state_file_bucket.arn}",
     ]
   }
 
@@ -139,7 +119,7 @@ data "aws_iam_policy_document" "state_file_access_permissions" {
       "s3:PutObject"
     ]
     resources = [
-      "${aws_s3_bucket.state_file_bucket.arn}/",
+      "${aws_s3_bucket.state_file_bucket.arn}/*",
     ]
   }
 
@@ -151,7 +131,7 @@ data "aws_iam_policy_document" "state_file_access_permissions" {
       "kms:GenerateDataKey"
     ]
     resources = [
-      "${data.aws_kms_alias.s3.target_key_arn}/",
+      "${data.aws_kms_alias.s3.target_key_arn}",
     ]
   }
 
