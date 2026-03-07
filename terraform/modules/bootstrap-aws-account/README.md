@@ -13,7 +13,7 @@ To use the module, the following needs to be specified:
 
 ```terraform
 module "bootstrap" {
-    source = ".modules/bootstrap-aws-account"
+    source = "./modules/bootstrap-aws-account"
 
     state_file_aws_region  = "region-for-state-file-bucket"
     state_file_bucket_name = "name-for-the-state-file-bucket"
@@ -26,10 +26,10 @@ module "bootstrap" {
 |-|-|-|
 |state_file_profile_name|`string`|AWS Profile to use for credentials instead of the default one|
 |override_state_lock_table_name|`string`|Default value is `terraform-state-lock`, allows setting a different value.|
-|override_aws_tags|`string`|Default value is `{Name   = "tf-bootstrap", Module = "build-on-aws/terraform-samples/modules/bootstrap-aws-account",}`, allows setting a different tags.|
+|override_aws_tags|`list(object({Name = string Module = string}))`|Default value is `{Name = "tf-bootstrap", Module = "./modules/bootstrap-aws-account",}`, allows setting a different tags.|
 |override_kms_key_alias|`string`|Default value is `alias/aws/s3`, allows setting a different key alias to use.|
 |override_tf_version|`string`|Default value is `1.14.6`, allows setting a different value.|
-|override_local_provider_version|`string`|Default value is `null`, allows setting a different value.|
+|override_local_provider_version|`string`|Default value is `2.7.0`, allows setting a different value.|
 |tf_additional_providers|`list(object({name = string provider_source  = string provider_version = string}))`|Default value is `[]`, allows adding additional providers to add to the generated `versions.tf` file.|
 
 ## License
