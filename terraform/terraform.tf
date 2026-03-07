@@ -8,6 +8,6 @@ terraform {
     region         = "eu-west-2"
     encrypt        = true
     kms_key_id     = "alias/aws/s3"
-    dynamodb_table = "terraform-state-lock"
+    use_lockfile   = true
   }
 }
