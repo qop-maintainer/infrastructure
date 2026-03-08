@@ -36,6 +36,16 @@ resource "aws_s3_bucket" "state_file_bucket" {
   tags   = local.aws_tags
 }
 
+# Guardrail to block public access to the S3 bucket ensured
+resource "aws_s3_bucket_public_access_block" "state_file_bucket" {
+  bucket = aws_s3_bucket.state_file_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 # Set ownership controls to bucket to prevent access from other AWS accounts
 resource "aws_s3_bucket_ownership_controls" "state_file_bucket" {
   bucket = aws_s3_bucket.state_file_bucket.id
