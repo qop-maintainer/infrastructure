@@ -87,7 +87,7 @@ data "aws_iam_policy_document" "state_file_access_permissions" {
     actions = [
       "s3:GetObject",
       "s3:PutObject",
-      "s3:DeletObject"
+      "s3:DeleteObject"
     ]
     resources = [
       "${aws_s3_bucket.state_file_bucket.arn}/*",
