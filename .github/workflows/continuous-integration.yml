@@ -74,4 +74,3 @@ jobs:
       - name: Validate
         run: terraform validate -no-color
         working-directory: ${{ env.WORKING_DIRECTORY }}
-

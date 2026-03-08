@@ -2,8 +2,8 @@
 # Using locals instead of hard-coding strings
 #--------------------------------------------#
 locals {
-  tf_version            = coalesce(var.override_tf_version, "1.14.6")
-  kms_key_alias         = coalesce(var.override_kms_key_alias, "alias/aws/s3")
+  tf_version    = coalesce(var.override_tf_version, "1.14.6")
+  kms_key_alias = coalesce(var.override_kms_key_alias, "alias/aws/s3")
 
   aws_tags = coalesce(var.override_aws_tags, {
     Name   = "tf-bootstrap",
@@ -27,7 +27,7 @@ locals {
 #----------------------------------------------#
 # AWS resources to store the state file
 #----------------------------------------------#
-# 1. S3 bucket, with versioning, KMS encryption, 
+# 1. S3 bucket, with versioning, KMS encryption,
 #    no public access, and locked down ACLs
 
 # S3 Bucket to store state file
@@ -116,9 +116,9 @@ resource "aws_iam_policy" "state_file_access_iam_policy" {
   tags   = local.aws_tags
 }
 
-# Create the terraform backend configuration - the catch 22 is that you need infrastructure to 
+# Create the terraform backend configuration - the catch 22 is that you need infrastructure to
 # store the state file before you can automate your infrastructure. The approach needs 2 steps:
-# 1. Create the S3 bucket to store the state, and generate the backend 
+# 1. Create the S3 bucket to store the state, and generate the backend
 #    config for terraform to use in the terraform.tf file.
 # 2. For the 2nd run, it will now use this config and migrate the local state file to S3.
 resource "local_file" "terraform_tf" {

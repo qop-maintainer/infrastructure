@@ -2,20 +2,20 @@
 # Using locals instead of hard-coding strings
 #--------------------------------------------#
 locals {
-#   terraform_source_dir                   = coalesce(var.override_terraform_source_dir, "terraform/")
-  repository_default_branch_name         = coalesce(var.override_repository_default_branch_name, "main")
-#   github_provider_version                = coalesce(var.override_github_provider_version, "6.11.1")
-  iam_role_name_apply                    = coalesce(var.override_iam_role_name_apply, "gha-tf-apply-${substr(var.github_repository, 0, 64 - length("gha-tf-apply-"))}")
-  iam_role_name_plan                     = coalesce(var.override_iam_role_name_plan, "gha-tf-plan-${substr(var.github_repository, 0, 64 - length("gha-tf-plan-"))}")
-  iam_policy_apply                       = coalesce(var.override_iam_policy_apply_arn, "arn:aws:iam::aws:policy/AdministratorAccess")
-  iam_policy_plan                        = coalesce(var.override_iam_policy_plan_arn, "arn:aws:iam::aws:policy/ReadOnlyAccess")
-  aws_ssm_name_github_token              = coalesce(var.override_aws_ssm_name_github_token, "/cicd/github_token")
-#   github_terraform_workflow_file         = coalesce(var.override_github_terraform_workflow_filename, "terraform.yml")
+  #   terraform_source_dir                   = coalesce(var.override_terraform_source_dir, "terraform/")
+  repository_default_branch_name = coalesce(var.override_repository_default_branch_name, "main")
+  #   github_provider_version                = coalesce(var.override_github_provider_version, "6.11.1")
+  iam_role_name_apply       = coalesce(var.override_iam_role_name_apply, "gha-tf-apply-${substr(var.github_repository, 0, 64 - length("gha-tf-apply-"))}")
+  iam_role_name_plan        = coalesce(var.override_iam_role_name_plan, "gha-tf-plan-${substr(var.github_repository, 0, 64 - length("gha-tf-plan-"))}")
+  iam_policy_apply          = coalesce(var.override_iam_policy_apply_arn, "arn:aws:iam::aws:policy/AdministratorAccess")
+  iam_policy_plan           = coalesce(var.override_iam_policy_plan_arn, "arn:aws:iam::aws:policy/ReadOnlyAccess")
+  aws_ssm_name_github_token = coalesce(var.override_aws_ssm_name_github_token, "/cicd/github_token")
+  #   github_terraform_workflow_file         = coalesce(var.override_github_terraform_workflow_filename, "terraform.yml")
   github_env_var_name_iam_role_plan_arn  = "AWS_IAM_ROLE_PLAN"
   github_env_var_name_iam_role_apply_arn = "AWS_IAM_ROLE_APPLY"
   github_env_var_name_aws_region         = "AWS_REGION"
-#   github_env_var_name_terraform_version  = "TF_VERSION"
-  github_env_var_name_github_token       = "GH_TOKEN"
+  #   github_env_var_name_terraform_version  = "TF_VERSION"
+  github_env_var_name_github_token = "GH_TOKEN"
 
   aws_tags = coalesce(var.override_aws_tags, {
     GitHubRepo = "${var.github_owner}/${var.github_repository}"
@@ -28,13 +28,13 @@ locals {
     "1c58a3a8518e8759bf075b76b750d4f2df264fcd"
   ]
 
-#   github_provider = [
-#     {
-#       name             = "github"
-#       provider_source  = "integrations/github"
-#       provider_version = local.github_provider_version
-#     }
-#   ]
+  #   github_provider = [
+  #     {
+  #       name             = "github"
+  #       provider_source  = "integrations/github"
+  #       provider_version = local.github_provider_version
+  #     }
+  #   ]
 }
 
 # Create the partial GitHub provider to use the GitHub token retrieved from SSM or Cloudshell
@@ -50,9 +50,9 @@ resource "local_file" "tf_github_provider" {
 }
 
 # Set up access from GitHub into the account. The thumbprint for GitHub
-# certificate can be used from the post 
+# certificate can be used from the post
 # https://github.blog/changelog/2022-01-13-github-actions-update-on-oidc-based-deployments-to-aws/
-# or generated. 
+# or generated.
 resource "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 
@@ -63,7 +63,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 
 #------------------------------------------------------------#
 # IAM Role used to apply changes.
-# Defaults to policy/AdministratorAccess, 
+# Defaults to policy/AdministratorAccess,
 # but can be overridden to a custom policy
 # by setting var.override_iam_policy_administrator_access_arn
 #------------------------------------------------------------#
@@ -116,7 +116,7 @@ resource "aws_iam_role_policy_attachment" "github_actions_apply_state_lock_polic
 
 #------------------------------------------------------------#
 # IAM Role used to plan changes.
-# Defaults to policy/ReadOnly, 
+# Defaults to policy/ReadOnly,
 # but can be overridden to a custom policy
 # by setting var.override_iam_policy_read_only_arn
 #------------------------------------------------------------#
@@ -146,13 +146,13 @@ data "aws_iam_policy_document" "github_actions_read_assume_role_policy" {
       ]
     }
     # Condition to limit to pull requests targeting 'main' branch
-   # condition {
-   #   test     = "StringEquals"
-   #  variable = "token.actions.githubusercontent.com:base_ref"
-   #   values = [
-   #     local.repository_default_branch_name
-   #   ]
-   # }
+    # condition {
+    #   test     = "StringEquals"
+    #  variable = "token.actions.githubusercontent.com:base_ref"
+    #   values = [
+    #     local.repository_default_branch_name
+    #   ]
+    # }
   }
 }
 
@@ -184,12 +184,12 @@ resource "github_actions_secret" "github_cicd_token" {
   repository  = var.github_repository
   secret_name = local.github_env_var_name_github_token
 
-  # Given that the GitHub token is only required during bootstrapping, using 
-  # plaintext_value referencing an unencrypted SSM parameter is a reasonable 
-  # approach to avoid chicken-and-egg issues with encrypting the token and 
+  # Given that the GitHub token is only required during bootstrapping, using
+  # plaintext_value referencing an unencrypted SSM parameter is a reasonable
+  # approach to avoid chicken-and-egg issues with encrypting the token and
   # storing it in SSM in the first place.
   #
-  # You can replace this with encrypted_value - this requires 
+  # You can replace this with encrypted_value - this requires
   # encrypting the value and storing the encrypted string in SSM,
   # see https://docs.github.com/en/rest/guides/encrypting-secrets-for-the-rest-api
   plaintext_value = data.aws_ssm_parameter.github_token.value
