@@ -39,7 +39,7 @@ locals {
 
 # Create the GitHub provider to use the GitHub token retrieved from SSM
 resource "local_file" "tf_github_provider" {
-  filename             = "${path.root}/versions-github.tf"
+  filename             = "${path.root}/providers.tf"
   directory_permission = "0755"
   file_permission      = "0644"
   content = templatefile("${path.module}/templates/providers.tf.tmpl", {
