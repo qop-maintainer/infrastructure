@@ -28,6 +28,7 @@ jobs:
       id-token: write
 
     env:
+      TF_IN_AUTOMATION: true
       WORKING_DIRECTORY: terraform
 
     steps:
@@ -64,7 +65,7 @@ jobs:
       - name: Initialise
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: terraform init -no-color
+        run: terraform init -input=false -no-color
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Prettify
@@ -76,7 +77,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Plan
-        run: terraform plan -no-color
+        run: terraform plan -input=false -no-color
         working-directory: ${{ env.WORKING_DIRECTORY }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
