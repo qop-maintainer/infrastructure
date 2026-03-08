@@ -3,11 +3,11 @@
 # to not change this outside of the module.
 terraform {
   backend "s3" {
-    bucket         = "qop-maintainer-terraform-state-eu-west-2"
-    key            = "terraform-state"
-    region         = "eu-west-2"
-    encrypt        = true
-    kms_key_id     = "alias/aws/s3"
-    use_lockfile   = true
+    bucket       = "qop-maintainer-terraform-state-eu-west-2"
+    key          = "terraform-state"
+    region       = "eu-west-2"
+    encrypt      = true
+    kms_key_id   = "alias/aws/s3"
+    use_lockfile = true
   }
 }
