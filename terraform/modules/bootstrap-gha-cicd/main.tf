@@ -139,20 +139,20 @@ data "aws_iam_policy_document" "github_actions_read_assume_role_policy" {
 
     # Condition to limit to pull requests
     condition {
-      test     = "StringEquals"
+      test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:${var.github_owner}/${var.github_repository}:pull_request"
+        "repo:${var.github_owner}/${var.github_repository}:*"
       ]
     }
     # Condition to limit to pull requests targeting 'main' branch
-    condition {
-      test     = "StringEquals"
-     variable = "token.actions.githubusercontent.com:base_ref"
-      values = [
-        local.repository_default_branch_name
-      ]
-    }
+   # condition {
+   #   test     = "StringEquals"
+   #  variable = "token.actions.githubusercontent.com:base_ref"
+   #   values = [
+   #     local.repository_default_branch_name
+   #   ]
+   # }
   }
 }
 
