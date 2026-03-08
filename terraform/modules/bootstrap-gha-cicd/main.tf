@@ -37,7 +37,9 @@ locals {
 #   ]
 }
 
-# Create the GitHub provider to use the GitHub token retrieved from SSM
+# Create the partial GitHub provider to use the GitHub token retrieved from SSM or Cloudshell
+# During bootstrapping, provider authentication via GITHUB_TOKEN environment variable is required
+# and two consecutive applies are required.
 resource "local_file" "tf_github_provider" {
   filename             = "${path.root}/providers.tf"
   directory_permission = "0755"
@@ -182,6 +184,11 @@ resource "github_actions_secret" "github_cicd_token" {
   repository  = var.github_repository
   secret_name = local.github_env_var_name_github_token
 
+  # Given that the GitHub token is only required during bootstrapping, using 
+  # plaintext_value referencing an unencrypted SSM parameter is a reasonable 
+  # approach to avoid chicken-and-egg issues with encrypting the token and 
+  # storing it in SSM in the first place.
+  #
   # You can replace this with encrypted_value - this requires 
   # encrypting the value and storing the encrypted string in SSM,
   # see https://docs.github.com/en/rest/guides/encrypting-secrets-for-the-rest-api
