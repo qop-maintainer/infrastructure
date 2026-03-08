@@ -1,0 +1,73 @@
+name: Continuous Integration
+
+env:
+    WORKING_DIRECTORY: terraform
+    AWS_REGION: eu-west-2
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '$WORKING_DIRECTORY/**'
+
+  push:
+    branches:
+      - main
+    paths:
+      - '$WORKING_DIRECTORY/**'
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+          allowed-endpoints: >
+            github.com:443
+            registry.terraform.io:443
+
+      - name: Checkout Repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          show-progress: false
+
+      - name: Configure AWS credentials PR (read-only)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: $${{ secrets.AWS_IAM_ROLE_PLAN }}
+          aws-region: $AWS_REGION
+
+      - name: Retrieve Terraform version from mise.toml
+        id: terraform-version
+        run: echo "version=$(yq .tools.terraform mise.toml)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
+        with:
+          terraform_version: ${{ steps.terraform-version.outputs.version }}
+
+      - name: Initialise
+        env:
+          GITHUB_TOKEN: $${{ secrets.GH_TOKEN }}
+        run: terraform init -no-color
+        working-directory: ${terraform_source_dir}
+
+      - name: Prettify
+        run: terraform fmt -check -no-color
+        working-directory: ${terraform_source_dir}
+
+      - name: Validate
+        run: terraform validate -no-color
+        working-directory: ${terraform_source_dir}
+
