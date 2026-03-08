@@ -150,7 +150,7 @@ data "aws_iam_policy_document" "github_actions_read_assume_role_policy" {
       test     = "StringEquals"
      variable = "token.actions.githubusercontent.com:base_ref"
       values = [
-        "refs/heads/${local.repository_default_branch_name}" # Only allow for PRs targeting the 'main' branch
+        local.repository_default_branch_name
       ]
     }
   }
