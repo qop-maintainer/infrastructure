@@ -1,5 +1,5 @@
-variable "github_organization" {
-  description = "(Required) Name of the GitHub organization"
+variable "github_owner" {
+  description = "(Required) Name of the GitHub owner"
   type        = string
 }
 
@@ -35,12 +35,6 @@ variable "override_repository_default_branch_name" {
 #   default     = null
 # }
 
-# variable "override_aws_github_token_ssm_name" {
-#   description = "Override name of the AWS SSM location for the GitHub Token, defaults to /cicd/github_token"
-#   type        = string
-#   default     = null
-# }
-
 variable "override_iam_role_name_apply" {
   description = "Override the IAM role name used by the GitHub Actions workflows for terraform apply, defaults to gh-tf-apply-<repo_name>"
   type        = string
@@ -71,11 +65,11 @@ variable "override_iam_policy_plan_arn" {
 #   default     = null
 # }
 
-# variable "override_aws_ssm_name_github_token" {
-#   description = "Name of the SSM parameter to store the GitHub token, defaults to /cicd/github_token"
-#   type        = string
-#   default     = null
-# }
+variable "override_aws_ssm_name_github_token" {
+  description = "Name of the SSM parameter to store the GitHub token, defaults to /cicd/github_token"
+  type        = string
+  default     = null
+}
 
 # variable "override_github_provider_version" {
 #   description = "Version of the GitHub provider to use, defaults to 6.0"

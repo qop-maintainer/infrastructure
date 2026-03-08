@@ -9,7 +9,7 @@ locals {
   iam_role_name_plan                     = coalesce(var.override_iam_role_name_plan, "gha-tf-plan-${substr(var.github_repository, 0, 64 - length("gha-tf-plan-"))}")
   iam_policy_apply                       = coalesce(var.override_iam_policy_apply_arn, "arn:aws:iam::aws:policy/AdministratorAccess")
   iam_policy_plan                        = coalesce(var.override_iam_policy_plan_arn, "arn:aws:iam::aws:policy/ReadOnlyAccess")
-#   aws_ssm_name_github_token              = coalesce(var.override_aws_ssm_name_github_token, "/cicd/github_token")
+  aws_ssm_name_github_token              = coalesce(var.override_aws_ssm_name_github_token, "/cicd/github_token")
 #   github_terraform_workflow_file         = coalesce(var.override_github_terraform_workflow_filename, "terraform.yml")
   github_env_var_name_iam_role_plan_arn  = "AWS_IAM_ROLE_PLAN"
   github_env_var_name_iam_role_apply_arn = "AWS_IAM_ROLE_APPLY"
@@ -18,7 +18,7 @@ locals {
   github_env_var_name_github_token       = "GH_TOKEN"
 
   aws_tags = coalesce(var.override_aws_tags, {
-    GitHubRepo = "${var.github_organization}/${var.github_repository}"
+    GitHubRepo = "${var.github_owner}/${var.github_repository}"
     Module     = "./modules/bootstrap-gha-cicd"
   })
 
@@ -42,8 +42,8 @@ resource "local_file" "tf_github_provider" {
   filename             = "${path.root}/versions-github.tf"
   directory_permission = "0755"
   file_permission      = "0644"
-  content = templatefile("${path.module}/templates/versions-github.tf.tmpl", {
-    github_organization = var.github_organization
+  content = templatefile("${path.module}/templates/providers.tf.tmpl", {
+    github_owner = var.github_owner
   })
 }
 
@@ -87,7 +87,7 @@ data "aws_iam_policy_document" "github_actions_write_assume_role_policy" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:${var.github_organization}/${var.github_repository}:ref:refs/heads/${local.repository_default_branch_name}"
+        "repo:${var.github_owner}/${var.github_repository}:ref:refs/heads/${local.repository_default_branch_name}"
       ]
     }
   }
@@ -140,9 +140,9 @@ data "aws_iam_policy_document" "github_actions_read_assume_role_policy" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:${var.github_organization}/${var.github_repository}:pull_request",
-        "repo:${var.github_organization}/${var.github_repository}:ref/pull/*",
-        "repo:${var.github_organization}/${var.github_repository}:ref:refs/heads/${local.repository_default_branch_name}"
+        "repo:${var.github_owner}/${var.github_repository}:pull_request",
+        "repo:${var.github_owner}/${var.github_repository}:ref/pull/*",
+        "repo:${var.github_owner}/${var.github_repository}:ref:refs/heads/${local.repository_default_branch_name}"
       ]
     }
     # Condition to limit to pull requests targeting 'main' branch
@@ -176,9 +176,9 @@ resource "aws_iam_role_policy_attachment" "github_actions_plan_state_lock_policy
 }
 
 
-# data "aws_ssm_parameter" "github_token" {
-#   name = local.aws_ssm_name_github_token
-# }
+data "aws_ssm_parameter" "github_token" {
+  name = local.aws_ssm_name_github_token
+}
 
 resource "github_actions_secret" "github_cicd_token" {
   repository  = var.github_repository
