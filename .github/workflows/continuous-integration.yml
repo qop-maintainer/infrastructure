@@ -5,13 +5,17 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/continuous-integration.yml'
       - 'terraform/**'
+      - 'mise.toml'
 
   push:
     branches:
       - main
     paths:
+      - '.github/workflows/continuous-integration.yml'
       - 'terraform/**'
+      - 'mise.toml'
 
 permissions: {}
 
@@ -25,7 +29,6 @@ jobs:
 
     env:
       WORKING_DIRECTORY: terraform
-      AWS_REGION: eu-west-2
 
     steps:
       - name: Harden Runner
@@ -43,12 +46,6 @@ jobs:
           persist-credentials: false
           show-progress: false
 
-      - name: Configure AWS credentials PR (read-only)
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
-        with:
-          role-to-assume: ${{ secrets.AWS_IAM_ROLE_PLAN }}
-          aws-region: ${{ env.AWS_REGION }}
-
       - name: Retrieve Terraform version from mise.toml
         id: terraform-version
         run: echo "version=$(yq .tools.terraform mise.toml)" >> "$GITHUB_OUTPUT"
@@ -58,9 +55,15 @@ jobs:
         with:
           terraform_version: ${{ steps.terraform-version.outputs.version }}
 
+      - name: Configure AWS credentials PR (read-only)
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
+        with:
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_PLAN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
       - name: Initialise
         env:
-          GITHUB_TOKEN: $${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: terraform init -no-color
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
