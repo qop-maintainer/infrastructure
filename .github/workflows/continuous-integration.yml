@@ -78,3 +78,5 @@ jobs:
       - name: Plan
         run: terraform plan -no-color
         working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
