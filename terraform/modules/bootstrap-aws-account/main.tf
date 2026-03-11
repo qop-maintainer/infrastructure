@@ -2,7 +2,7 @@
 # Using locals instead of hard-coding strings
 #--------------------------------------------#
 locals {
-  tf_version    = coalesce(var.override_tf_version, "1.14.6")
+  # tf_version    = coalesce(var.override_tf_version, "1.14.6")
   kms_key_alias = coalesce(var.override_kms_key_alias, "alias/aws/s3")
 
   aws_tags = coalesce(var.override_aws_tags, {
@@ -10,18 +10,18 @@ locals {
     Module = "modules/bootstrap-aws-account",
   })
 
-  provider_config = concat(var.tf_additional_providers, [
-    {
-      name             = "aws"
-      provider_source  = "hashicorp/aws"
-      provider_version = coalesce(var.override_aws_provider_version, "6.34.0")
-    },
-    {
-      name             = "local"
-      provider_source  = "hashicorp/local"
-      provider_version = coalesce(var.override_local_provider_version, "2.7.0")
-    }
-  ])
+  # provider_config = concat(var.tf_additional_providers, [
+  #   {
+  #     name             = "aws"
+  #     provider_source  = "hashicorp/aws"
+  #     provider_version = coalesce(var.override_aws_provider_version, "6.34.0")
+  #   },
+  #   {
+  #     name             = "local"
+  #     provider_source  = "hashicorp/local"
+  #     provider_version = coalesce(var.override_local_provider_version, "2.7.0")
+  #   }
+  # ])
 }
 
 #----------------------------------------------#
@@ -145,12 +145,12 @@ resource "local_file" "terraform_tf" {
 }
 
 # Generate the versions.tf to specify the providers to use with minimum versions
-resource "local_file" "versions_tf" {
-  filename = "${path.root}/versions.tf"
-  content = templatefile("${path.module}/templates/versions.tf.tmpl", {
-    tf_version = local.tf_version
-    providers  = local.provider_config
-  })
-  directory_permission = "0755"
-  file_permission      = "0644"
-}
+# resource "local_file" "versions_tf" {
+#   filename = "${path.root}/versions.tf"
+#   content = templatefile("${path.module}/templates/versions.tf.tmpl", {
+#     tf_version = local.tf_version
+#     providers  = local.provider_config
+#   })
+#   directory_permission = "0755"
+#   file_permission      = "0644"
+# }
