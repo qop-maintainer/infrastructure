@@ -5,6 +5,17 @@
     "schedule:nonOfficeHours",
     ":gitSignOff"
   ],
+  "packageRules": [
+    {
+      "matchManagers": ["mise"],
+      "matchPackagePatterns": ["^terraform"],
+      "groupName": "terraform-lockstep"
+    },{
+      "matchManagers": ["terraform"],
+      "matchPackagePatterns": ["^terraform"],
+      "groupName": "terraform-lockstep"
+    }
+  ],
   "internalChecksFilter": "strict",
   "minimumReleaseAge": "3 days",
   "pre-commit": {
