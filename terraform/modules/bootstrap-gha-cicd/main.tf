@@ -2,19 +2,15 @@
 # Using locals instead of hard-coding strings
 #--------------------------------------------#
 locals {
-  #   terraform_source_dir                   = coalesce(var.override_terraform_source_dir, "terraform/")
   repository_default_branch_name = coalesce(var.override_repository_default_branch_name, "main")
-  #   github_provider_version                = coalesce(var.override_github_provider_version, "6.11.1")
   iam_role_name_apply       = coalesce(var.override_iam_role_name_apply, "gha-tf-apply-${substr(var.github_repository, 0, 64 - length("gha-tf-apply-"))}")
   iam_role_name_plan        = coalesce(var.override_iam_role_name_plan, "gha-tf-plan-${substr(var.github_repository, 0, 64 - length("gha-tf-plan-"))}")
   iam_policy_apply          = coalesce(var.override_iam_policy_apply_arn, "arn:aws:iam::aws:policy/AdministratorAccess")
   iam_policy_plan           = coalesce(var.override_iam_policy_plan_arn, "arn:aws:iam::aws:policy/ReadOnlyAccess")
   aws_ssm_name_github_token = coalesce(var.override_aws_ssm_name_github_token, "/cicd/github_token")
-  #   github_terraform_workflow_file         = coalesce(var.override_github_terraform_workflow_filename, "terraform.yml")
   github_env_var_name_iam_role_plan_arn  = "AWS_IAM_ROLE_PLAN"
   github_env_var_name_iam_role_apply_arn = "AWS_IAM_ROLE_APPLY"
   github_env_var_name_aws_region         = "AWS_REGION"
-  #   github_env_var_name_terraform_version  = "TF_VERSION"
   github_env_var_name_github_token = "GH_TOKEN"
 
   aws_tags = coalesce(var.override_aws_tags, {
@@ -27,14 +23,6 @@ locals {
     "6938fd4d98bab03faadb97b34396831e3780aea1",
     "1c58a3a8518e8759bf075b76b750d4f2df264fcd"
   ]
-
-  #   github_provider = [
-  #     {
-  #       name             = "github"
-  #       provider_source  = "integrations/github"
-  #       provider_version = local.github_provider_version
-  #     }
-  #   ]
 }
 
 # Create the partial GitHub provider to use the GitHub token retrieved from SSM or Cloudshell
@@ -194,12 +182,6 @@ resource "github_actions_secret" "github_cicd_token" {
   # see https://docs.github.com/en/rest/guides/encrypting-secrets-for-the-rest-api
   plaintext_value = data.aws_ssm_parameter.github_token.value
 }
-
-# resource "github_actions_variable" "tf_version" {
-#   repository    = var.github_repository
-#   variable_name = local.github_env_var_name_terraform_version
-#   value         = var.github_actions_terraform_version
-# }
 
 resource "github_actions_secret" "iam_policy_apply_changes_name" {
   repository      = var.github_repository
