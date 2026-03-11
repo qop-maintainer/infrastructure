@@ -7,13 +7,22 @@
   ],
   "packageRules": [
     {
-      "matchManagers": ["mise"],
-      "matchPackagePatterns": ["^terraform"],
-      "groupName": "terraform-lockstep"
-    },{
-      "matchManagers": ["terraform"],
-      "matchPackagePatterns": ["^terraform"],
-      "groupName": "terraform-lockstep"
+      "matchManagers": [
+        "mise"
+      ],
+      "groupName": "terraform-lockstep",
+      "matchPackageNames": [
+        "/^terraform/"
+      ]
+    },
+    {
+      "matchManagers": [
+        "terraform"
+      ],
+      "groupName": "terraform-lockstep",
+      "matchPackageNames": [
+        "/^terraform/"
+      ]
     }
   ],
   "internalChecksFilter": "strict",
@@ -23,6 +32,8 @@
   },
   "timezone": "Europe/London",
   "vulnerabilityAlerts": {
-    "labels": ["security"]
+    "labels": [
+      "security"
+    ]
   }
 }
