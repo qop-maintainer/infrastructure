@@ -3,12 +3,12 @@
 # to not change this outside of the module.
 terraform {
   backend "s3" {
-    bucket        = "${state_file_bucket_name}"
-    key           = "${state_file_bucket_key}"
-    region        = "${state_file_aws_region}"
-    encrypt       = true
-    kms_key_id    = "${kms_key_id}"
-    use_lockfile  = true%{ if profile_name != null }
-    profile       = "${profile_name}"%{ endif }
+    bucket       = "${state_file_bucket_name}"
+    key          = "${state_file_bucket_key}"
+    region       = "${state_file_aws_region}"
+    encrypt      = true
+    kms_key_id   = "${kms_key_id}"
+    use_lockfile = true%{ if profile_name != null }
+    profile      = "${profile_name}"%{ endif }
   }
 }
