@@ -2,16 +2,16 @@
 # Using locals instead of hard-coding strings
 #--------------------------------------------#
 locals {
-  repository_default_branch_name = coalesce(var.override_repository_default_branch_name, "main")
-  iam_role_name_apply       = coalesce(var.override_iam_role_name_apply, "gha-tf-apply-${substr(var.github_repository, 0, 64 - length("gha-tf-apply-"))}")
-  iam_role_name_plan        = coalesce(var.override_iam_role_name_plan, "gha-tf-plan-${substr(var.github_repository, 0, 64 - length("gha-tf-plan-"))}")
-  iam_policy_apply          = coalesce(var.override_iam_policy_apply_arn, "arn:aws:iam::aws:policy/AdministratorAccess")
-  iam_policy_plan           = coalesce(var.override_iam_policy_plan_arn, "arn:aws:iam::aws:policy/ReadOnlyAccess")
-  aws_ssm_name_github_token = coalesce(var.override_aws_ssm_name_github_token, "/cicd/github_token")
+  repository_default_branch_name         = coalesce(var.override_repository_default_branch_name, "main")
+  iam_role_name_apply                    = coalesce(var.override_iam_role_name_apply, "gha-tf-apply-${substr(var.github_repository, 0, 64 - length("gha-tf-apply-"))}")
+  iam_role_name_plan                     = coalesce(var.override_iam_role_name_plan, "gha-tf-plan-${substr(var.github_repository, 0, 64 - length("gha-tf-plan-"))}")
+  iam_policy_apply                       = coalesce(var.override_iam_policy_apply_arn, "arn:aws:iam::aws:policy/AdministratorAccess")
+  iam_policy_plan                        = coalesce(var.override_iam_policy_plan_arn, "arn:aws:iam::aws:policy/ReadOnlyAccess")
+  aws_ssm_name_github_token              = coalesce(var.override_aws_ssm_name_github_token, "/cicd/github_token")
   github_env_var_name_iam_role_plan_arn  = "AWS_IAM_ROLE_PLAN"
   github_env_var_name_iam_role_apply_arn = "AWS_IAM_ROLE_APPLY"
   github_env_var_name_aws_region         = "AWS_REGION"
-  github_env_var_name_github_token = "GH_TOKEN"
+  github_env_var_name_github_token       = "GH_TOKEN"
 
   aws_tags = coalesce(var.override_aws_tags, {
     GitHubRepo = "${var.github_owner}/${var.github_repository}"
@@ -29,7 +29,7 @@ locals {
 # During bootstrapping, provider authentication via GITHUB_TOKEN environment variable is required
 # and two consecutive applies are required.
 resource "local_file" "tf_github_provider" {
-  filename             = "${path.root}/providers.tf"
+  filename             = "${path.root}/providers-github.tf"
   directory_permission = "0755"
   file_permission      = "0644"
   content = templatefile("${path.module}/templates/providers.tf.tmpl", {
