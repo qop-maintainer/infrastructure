@@ -7,6 +7,8 @@ locals {
   aws_tags = coalesce(var.override_aws_tags, {
     Name   = "tf-bootstrap",
     Module = "modules/bootstrap-aws-account",
+    }, {
+    Environment = "management"
   })
 }
 
