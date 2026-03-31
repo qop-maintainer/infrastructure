@@ -2,13 +2,11 @@
 
 ## Core Maintainers (and Responsibilities)
 
-**Lead Maintainer:** [@qop-maintainer](https://github.com/qop-maintainer)
+- **Lead Maintainer:** [@qop-maintainer](https://github.com/qop-maintainer)
 
 ## Individual Contributors
 
-**Maintainer:** [@ramirezj](https://github.com/ramirezj)
-
-- Your name here?
+- **Maintainer:** [@ramirezj](https://github.com/ramirezj)
 
 ## Bots (and GitHub Apps)
 
