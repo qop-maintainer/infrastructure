@@ -5,8 +5,9 @@ locals {
   kms_key_alias = coalesce(var.override_kms_key_alias, "alias/aws/s3")
 
   aws_tags = coalesce(var.override_aws_tags, {
-    Name   = "tf-bootstrap",
-    Module = "modules/bootstrap-aws-account",
+    Name        = "tf-bootstrap",
+    Environment = "Management"
+    Module      = "modules/bootstrap-aws-account",
   })
 }
 
