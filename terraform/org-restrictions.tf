@@ -62,7 +62,6 @@ resource "aws_organizations_policy" "restrict_regions" {
               "eu-west-2"
             ]
           }
-          # Exclude global services that only work in us-east-1
           ArnNotLike = {
             "aws:PrincipalArn" = [
               "arn:aws:iam::*:role/OrganizationAccountAccessRole"

@@ -17,8 +17,10 @@ resource "aws_ebs_encryption_by_default" "primary_region" {
 
 # Ensure that S3 buckets are private by default, and that public ACLs and policies are blocked
 resource "aws_s3_account_public_access_block" "strict" {
-  block_public_acls   = true
-  block_public_policy = true
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 # Adopt the default VPC and security group, with the side effect of deleting the default
