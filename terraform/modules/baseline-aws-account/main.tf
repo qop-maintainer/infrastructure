@@ -1,4 +1,4 @@
-# Ennsure that reasonable password policies are in place for IAM users
+# Ensure that reasonable password policies are in place for IAM users
 resource "aws_iam_account_password_policy" "strict" {
   minimum_password_length        = 45
   require_lowercase_characters   = true
@@ -6,7 +6,7 @@ resource "aws_iam_account_password_policy" "strict" {
   require_uppercase_characters   = true
   require_symbols                = true
   password_reuse_prevention      = 15
-  max_password_age               = 5
+  max_password_age               = 45
   allow_users_to_change_password = true
 }
 
