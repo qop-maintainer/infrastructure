@@ -166,6 +166,8 @@ resource "aws_organizations_policy_attachment" "deny_leave_org_root" {
   target_id = aws_organizations_organization.org.roots[0].id
 }
 
+# Root user resctictions will not apply to the management account, but we attach
+# it there to ensure it's in place for any future accounts created
 resource "aws_organizations_policy_attachment" "deny_root_user_all" {
   policy_id = aws_organizations_policy.deny_root_user.id
   target_id = aws_organizations_organization.org.roots[0].id
