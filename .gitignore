@@ -34,5 +34,8 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# Locally generated ZIP archives for Lambda functions
+*.zip
+
 # Finally, local detritus
 .DS_Store
