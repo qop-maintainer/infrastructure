@@ -81,7 +81,7 @@ jobs:
           terraform_version: ${{ steps.terraform-version.outputs.version }}
 
       - name: Configure AWS credentials PR (read-only)
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
         with:
           role-to-assume: ${{ secrets.AWS_IAM_ROLE_PLAN }}
           aws-region: ${{ vars.AWS_REGION }}
